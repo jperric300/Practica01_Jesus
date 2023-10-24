@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My Log-InApplication</string>
+    <string name="correo_electronico">Correo electronico</string>
+    <string name="contraseña">Contraseña</string>
+</resources>
