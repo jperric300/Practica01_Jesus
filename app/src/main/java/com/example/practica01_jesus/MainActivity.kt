@@ -2,6 +2,7 @@ package com.example.practica01_jesus
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,9 +14,13 @@ import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import com.example.mylog_inapplication.data.User
+import com.example.practica01_jesus.data.User
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+
+
+const val USER_CORRECT_CREDENTIALS = "user_correct_credentials"
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     private var checkEmail: Boolean = false
     private var checkPass: Boolean = false
     private lateinit var passLayout: TextInputLayout
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var switchDate: SwitchMaterial
 
     //------------------------------------------------------
     //EXPRESIONES REGULARES
@@ -38,18 +45,16 @@ class MainActivity : AppCompatActivity() {
     private val number = Regex(".*\\d+.*")
 
 
-    private fun credentials(email: String, password: String): Boolean {
+    private fun credentials(email: String, password: String): User? {
 
-        data class User(val name: String, val email: String, val password: String)
 
         val userList = listOf(
-            User("Jesus Miguel", "jesus@gmail.com", "123456Aa"),
-            User("Admin", "admin@gmail.com", "123456Ab"),
-
+            User("Jesus Miguel", "jesus@gmail.com", "123456Aa",R.drawable.user_image_mayor),
+            User("Admin", "admin@gmail.com", "123456Ab",R.drawable.user_image_administrator),
             )
 
         val user = userList.find { it.email == email }
-        return user?.password == password
+        return user?.takeIf { it.password == password }
     }
 
     private fun bindViews() {
@@ -153,22 +158,31 @@ class MainActivity : AppCompatActivity() {
 
 
         val userList = listOf(
-            User("Jesus Miguel", "jesus@gmail.com", "123456Aa"),
-            User("Admin", "admin@gmail.com", "123456Ab"),
+            User("Jesus Miguel", "jesus@gmail.com", "123456Aa",R.drawable.user_image_mayor),
+            User("Admin", "admin@gmail.com", "123456Ab",R.drawable.user_image_administrator),
         )
 
-//        val userList = arrayListOf(
-//            User("Jesus Miguel", "jesus@gmail.com", "123456Aa"),
-//            User("Admin", "admin@gmail.com", "123456Ab"),
-//        )
+        sharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        switchDate = findViewById(R.id.saveDate)
+
+        switchDate.setOnCheckedChangeListener { _, isChecked ->
+            val editor = sharedPreferences.edit()
+            editor.putBoolean("saveCredentials", isChecked)
+            editor.apply()
+        }
+
+        val saveCredentials = sharedPreferences.getBoolean("saveCredentials", false)
+
+        switchDate.isChecked = saveCredentials
 
 
         login.setOnClickListener {
 
             val email = emailText.text.toString()
             val password = passwordText.text.toString()
+            val user = credentials(email, password)
 
-            if (credentials(email, password)) {
+            user?.let {
                 login.visibility = View.INVISIBLE
 
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -176,11 +190,33 @@ class MainActivity : AppCompatActivity() {
                 }, 1000)
 
                 val intent = Intent(this, PageHome::class.java)
-                // intent.putExtra("userList", userList)
-                intent.putExtra(userList)
+
+
+                if (switchDate.isChecked) {
+                    val editor = sharedPreferences.edit()
+                    editor.putString("email", emailText.text.toString())
+                    editor.putString("password", passwordText.text.toString())
+
+                    editor.apply()
+                } else {
+                    val editor = sharedPreferences.edit()
+                    editor.remove("email")
+                    editor.remove("password")
+                    emailText.text?.clear()
+                    passwordText.text?.clear()
+                    editor.apply()
+                }
+
+
+                intent.putExtra(USER_CORRECT_CREDENTIALS, it)
+
+
+
+
                 startActivity(intent)
 
-            } else {
+
+            } ?: run {
 
                 toastError(this)
             }
@@ -191,9 +227,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-private fun Intent.putExtra(userList: List<User>) {
 
-}
 
 
 

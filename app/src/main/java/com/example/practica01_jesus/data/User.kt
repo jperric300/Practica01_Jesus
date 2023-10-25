@@ -1,3 +1,4 @@
-package com.example.mylog_inapplication.data
+package com.example.practica01_jesus.data
 
-data class User(val name: String, val email: String, val password: String)
+import java.io.Serializable
+data class User(val name: String, val email: String, val password: String, val imageUser: Int): Serializable
