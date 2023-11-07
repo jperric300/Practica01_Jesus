@@ -21,7 +21,8 @@ import com.google.android.material.textfield.TextInputLayout
 
 
 const val USER_CORRECT_CREDENTIALS = "user_correct_credentials"
-
+private const val EMAIL_PREFS_KEY = "email"
+private const val PASSWORD_PREFS_KEY = "password"
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,9 +36,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var switchDate: SwitchMaterial
 
-    //------------------------------------------------------
-    //EXPRESIONES REGULARES
-    //------------------------------------------------------
     private val reEmail = "^[A-Za-z0-9+_.-]+@(.+)$".toRegex()
     private val ncharacter = """^.{6,8}$""".toRegex()
     private val upperC = ".*[A-Z].*".toRegex()
@@ -45,13 +43,13 @@ class MainActivity : AppCompatActivity() {
     private val number = Regex(".*\\d+.*")
 
 
+
     private fun credentials(email: String, password: String): User? {
 
-
         val userList = listOf(
-            User("Jesus Miguel", "jesus@gmail.com", "123456Aa",R.drawable.user_image_mayor),
-            User("Admin", "admin@gmail.com", "123456Ab",R.drawable.user_image_administrator),
-            )
+            User("Jesus Miguel", "jesus@gmail.com", "123456Aa", R.drawable.user_image_mayor),
+            User("Admin", "admin@gmail.com", "123456Ab", R.drawable.user_image_administrator),
+        )
 
         val user = userList.find { it.email == email }
         return user?.takeIf { it.password == password }
@@ -63,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         emailText = findViewById(R.id.emailText)
         passwordText = findViewById(R.id.passwordText)
         login = findViewById(R.id.login)
-        passLayout=findViewById(R.id.passwordInputLayout)
+        passLayout = findViewById(R.id.passwordInputLayout)
 
     }
 
@@ -86,8 +84,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun functionCheckPassword(
-        passwordText: TextInputEditText, characterRankReg: Regex, upperC: Regex,
-        lowerC: Regex, number: Regex
+        passwordText: TextInputEditText,
+        characterRankReg: Regex,
+        upperC: Regex,
+        lowerC: Regex,
+        number: Regex
     ): Boolean {
         var result: Boolean = false;
 
@@ -114,7 +115,6 @@ class MainActivity : AppCompatActivity() {
         toast.show()
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -123,11 +123,6 @@ class MainActivity : AppCompatActivity() {
         exitApp.setOnClickListener {
             finishAffinity()
         }
-
-
-        //------------------------------------------------------------------------------------------
-        //Validar email
-        //------------------------------------------------------------------------------------------
 
         emailText.setOnEditorActionListener(OnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent.action == KeyEvent.ACTION_DOWN || keyEvent.action == KeyEvent.KEYCODE_ENTER) {
@@ -139,10 +134,6 @@ class MainActivity : AppCompatActivity() {
             return@OnEditorActionListener true
             false
         })
-
-        //------------------------------------------------------------------------------------------
-        ////Validar contraseña
-        //------------------------------------------------------------------------------------------
 
         passwordText.setOnEditorActionListener(OnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent.action == KeyEvent.ACTION_DOWN || keyEvent.action == KeyEvent.KEYCODE_ENTER) {
@@ -158,8 +149,8 @@ class MainActivity : AppCompatActivity() {
 
 
         val userList = listOf(
-            User("Jesus Miguel", "jesus@gmail.com", "123456Aa",R.drawable.user_image_mayor),
-            User("Admin", "admin@gmail.com", "123456Ab",R.drawable.user_image_administrator),
+            User("Jesus Miguel", "jesus@gmail.com", "123456Aa", R.drawable.user_image_mayor),
+            User("Admin", "admin@gmail.com", "123456Ab", R.drawable.user_image_administrator),
         )
 
         sharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
@@ -175,12 +166,18 @@ class MainActivity : AppCompatActivity() {
 
         switchDate.isChecked = saveCredentials
 
+        if (saveCredentials) {
+            emailText.setText(sharedPreferences.getString(EMAIL_PREFS_KEY, ""))
+            passwordText.setText(sharedPreferences.getString(PASSWORD_PREFS_KEY, ""))
+            checkEmail = functionCheckEmail(emailText, reEmail)
+            checkPass = functionCheckPassword(passwordText, ncharacter, upperC, lowerC, number)
+            login.isEnabled = checkData(checkPass, checkEmail)
+        }
 
         login.setOnClickListener {
-
-            val email = emailText.text.toString()
-            val password = passwordText.text.toString()
-            val user = credentials(email, password)
+            val EMAIL_PREFS = emailText.text.toString()
+            val PASSWORD_PREFS = passwordText.text.toString()
+            val user = credentials(EMAIL_PREFS, PASSWORD_PREFS)
 
             user?.let {
                 login.visibility = View.INVISIBLE
@@ -207,23 +204,15 @@ class MainActivity : AppCompatActivity() {
                     editor.apply()
                 }
 
-
                 intent.putExtra(USER_CORRECT_CREDENTIALS, it)
 
-
-
-
                 startActivity(intent)
-
 
             } ?: run {
 
                 toastError(this)
             }
-
         }
-
-
     }
 }
 
