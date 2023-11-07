@@ -1,48 +1,44 @@
 package com.example.practica01_jesus
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import com.example.mylog_inapplication.data.User
+import com.example.practica01_jesus.data.User
 
 @Suppress("DEPRECATION")
 class PageHome : AppCompatActivity() {
 
-private lateinit var logout:AppCompatButton
+    private lateinit var logout: AppCompatButton
 
 
-
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_page_home)
-
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_page_home)
 
         val intent = intent
-        val userList : List<User> = (intent.getSerializableExtra("userList") as? List<User>).orEmpty()
+        val user: User? = intent.getSerializableExtra(USER_CORRECT_CREDENTIALS) as? User
+        val userImageView = findViewById<ImageView>(R.id.userImageView)
+        val nameUserView = findViewById<TextView>(R.id.nameUser)
+        val emailUserView = findViewById<TextView>(R.id.emailUser)
 
-
-
-
-            val nameUserView = findViewById<TextView>(R.id.nameUser)
-            val emailUserView = findViewById<TextView>(R.id.emailUser)
-
-            nameUserView.text = userList.firstOrNull()?.name.orEmpty()
-            emailUserView.text = userList.firstOrNull()?.email.orEmpty()
-
+        nameUserView.text = user?.name.orEmpty()
+        emailUserView.text = user?.email.orEmpty()
+        user?.imageUser?.let { userImageView.setImageResource(it) }
 
         logout = findViewById(R.id.logout)
 
         logout.setOnClickListener {
 
-         exitSession()
+            exitSession()
 
         }
-
-
-        }
+    }
 
     private fun exitSession() {
         val builder = AlertDialog.Builder(this)
@@ -63,6 +59,8 @@ private lateinit var logout:AppCompatButton
 
 
 }
+
+
 
 
 

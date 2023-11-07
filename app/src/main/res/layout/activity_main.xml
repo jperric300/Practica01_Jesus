@@ -8,18 +8,16 @@
     android:outlineSpotShadowColor="#C61717"
     tools:context=".MainActivity">
 
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailInputLayout"
+        style="@style/MyTextInputLayoutStyle"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        style="@style/MyTextInputLayoutStyle"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="232dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/exitApp"
-        >
+        app:layout_constraintTop_toBottomOf="@id/exitApp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailText"
@@ -27,24 +25,23 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/correo_electronico"
-            android:inputType="text"
-            android:imeOptions="actionNext"/>
+            android:imeOptions="actionNext"
+            android:inputType="text" />
 
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordInputLayout"
-        android:layout_width="0dp"
         style="@style/MyTextInputLayoutStyle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginHorizontal="32dp"
-        app:layout_constraintTop_toTopOf="@id/emailInputLayout"
         android:layout_marginTop="80dp"
         app:endIconMode="password_toggle"
-        >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/emailInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordText"
@@ -52,14 +49,11 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/contraseña"
+            android:imeOptions="actionDone"
             android:inputType="textPassword"
-            tools:text="Contraseña"
-            android:imeOptions="actionDone"/>
-
+            tools:text="Contraseña" />
 
     </com.google.android.material.textfield.TextInputLayout>
-
-
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/login"
@@ -68,6 +62,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="260dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/select_btn_background"
         android:enabled="false"
         android:text="Entrar"
@@ -75,13 +70,10 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="20dp"
-        />
-
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/access"
@@ -118,8 +110,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
-        tools:visibility="visible"
-        app:tint="#3C3C3C" />
+        app:tint="#3C3C3C"
+        tools:visibility="visible" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/saveDate"
@@ -129,6 +121,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="121dp"
         android:background="@drawable/border_remember"
+        android:checked="false"
         android:text="Recordar"
         android:textColor="#000000"
         android:textColorHighlight="#FFC107"
@@ -140,7 +133,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:thumbTint="#FF9800"
         app:trackTint="#DFCA8C" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
